@@ -14,12 +14,6 @@ typedef union {
 	uint8_t byte;        //member used for register access
 	
 	struct{
-		/*
-		uint8_t C : 1;   //Truth table C column
-		uint8_t B : 1;	 //Truth table B column
-		uint8_t A : 1;	 //Truth table A column
-		uint8_t F : 1;	 //Truth table F column
-		*/
 		uint8_t bit0: 1;  //bit0
 		uint8_t bit1: 1;    //bit1
 		uint8_t bit2: 1;    //bit2
