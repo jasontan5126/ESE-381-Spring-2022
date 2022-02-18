@@ -6,9 +6,8 @@
  */ 
 
 
-#define F_CPU 4000000
-
 #include <avr/io.h>
+#define F_CPU 4000000
 #include <util/delay.h>
 
 #define PULL_UP_VAL 0x08
@@ -26,17 +25,17 @@ int main(void)
 		//For two bits to be used for the DIP SWITCH
 		//PC0 = 0 and PC1 = 0 for DIP SWITCH
 		
-		
+
 		if((~(PIN0_bm & PORTC_IN)) && (~(PIN1_bm & PORTC_IN))){
-			_delay_loop_1(33);
+			_delay_us(46);
 		}
 		//PC0 = 0 and PC1 = 1 for DIP SWITCH
-		else if((~(PIN0_bm & PORTC_IN)) && ((PIN1_bm & PORTC_IN))){
-			_delay_loop_1(67);
+		if((~(PIN0_bm & PORTC_IN)) && ((PIN1_bm & PORTC_IN))){
+			_delay_us(52);
 		}
-		//PC0 = 1 and PC1 = 0 for DIP SWITCH
-		else if(((PIN0_bm & PORTC_IN)) && (~(PIN1_bm & PORTC_IN))){
-			_delay_loop_1(137);
+		//PC0 = 1 and PC1 = 1 for DIP SWITCH
+		if(((PIN0_bm & PORTC_IN)) && ((PIN1_bm & PORTC_IN))){
+			_delay_us(103);
 		}
 		
 		
@@ -45,15 +44,15 @@ int main(void)
 		//For two bits to be used for the DIP SWITCH
 		//PC0 = 0 and PC1 = 0 for DIP SWITCH
 		if((~(PIN0_bm & PORTC_IN)) && (~(PIN1_bm & PORTC_IN))){
-			_delay_loop_1(33);
+			_delay_us(46);
 		}
 		//PC0 = 0 and PC1 = 1 for DIP SWITCH
-		else if((~(PIN0_bm & PORTC_IN)) && ((PIN1_bm & PORTC_IN))){
-			_delay_loop_1(67);
+		if((~(PIN0_bm & PORTC_IN)) && ((PIN1_bm & PORTC_IN))){
+			_delay_us(52);
 		}
-		//PC0 = 1 and PC1 = 0 for DIP SWITCH
-		else if(((PIN0_bm & PORTC_IN)) && (~(PIN1_bm & PORTC_IN))){
-			_delay_loop_1(137);
+		//PC0 = 1 and PC1 = 1 for DIP SWITCH
+		if(((PIN0_bm & PORTC_IN)) && ((PIN1_bm & PORTC_IN))){
+			_delay_us(103);
 		}	
 		
     }
