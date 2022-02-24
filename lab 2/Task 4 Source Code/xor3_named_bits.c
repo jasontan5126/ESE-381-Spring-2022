@@ -37,22 +37,22 @@ int main(void)
 	
     while (1) 
     {
-		uint8_t C = PORTA_IN & PIN7_bm;
-		uint8_t B = (PORTA_IN & PIN6_bm) << 1;
-		uint8_t A = (PORTA_IN & PIN5_bm) << 2;
+		data.byte = VPORTA_IN;
+	//	temp_in = 0xFF;  //Initialize the LED to be off
+		uint8_t C = data.bvals.bit7;  //To read in terms of whether the switch is on (logic 0) or off (logic 1) for PA7
+		uint8_t B = data.bvals.bit6;  //To read in terms of whether the switch is on (logic 0) or off (logic 1) for PA6
+		uint8_t A = data.bvals.bit5;  //To read in terms of whether the switch is on (logic 0) or off (logic 1) for PA5
+		
 		
 		data.byte = temp_in;  //Set that register as the initial output value
 		
+		if((C ^ B ^ A) | (C ^ ~B ^ ~A) | (~C ^ B ^ ~A) | (~C ^ ~B ^ A)){
+			PORTD.OUT = 0x7F;
+		}
+		else{
+			PORTD.OUT = 0xFF;
+		}  
 		
-		
-		//Canonical sum of products of the 3 input truth table and store that into 
-		data.byte =  (((~C) ^ (~B) ^ (A)) ^ 0xFF ) | (((~C) ^ (B) ^ (~A)) ^ 0xFF ) | (((C) ^ (~B) ^ (~A)) ^ 0xFF ) | (((C) ^ (B) ^ (A)) ^ 0xFF );
-		
-		//Store that bit result after doing the canonical sum of product 
-		temp_out = data.byte;
-		
-		//To output the result 
-		PORTD_OUT = temp_out;   
 		
     }
 }
