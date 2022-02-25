@@ -26,11 +26,11 @@ uint8_t rxData;
 
 uint8_t i;
 char receivedData[80];
+int k;
 
 
 //Interrupt function executes when Receive Complete Interrupt is enabled or set
 ISR(PORTB_PORT_vect){
-	
 	i = 0;
 	while(i < 80){
 		tempReceiveData = (char)UART_sw_read();   //Execute the sw read function
@@ -44,13 +44,16 @@ ISR(PORTB_PORT_vect){
 	}
 	sendString(receivedData);       //Execute the function to send 
 	i = 0;
+	//To reset every element to be null for the series of strings
+	for(int j=0; j < 80; j++){
+		receivedData[j] = 0x00;
+	}
 	PORTB_INTFLAGS |= PORT_INT1_bm;		  //Clear the interrupt for 
 }
 
 
 int main(void)
-{
-	
+{	
 	//unsigned char receiveData;
 	//USART Full Duplex Initialization
 	PORTB.DIR = PIN0_bm | ~PIN1_bm;   //Set  PB1 as input to receiving data and PB0 as the output for transmitting data
@@ -72,14 +75,79 @@ https://developer.mozilla.org/en-US/docs/Glossary/CRLF
 Send the string of characters to display for Tera Term
 */
 void sendString(char* sendLine){
-	for(uint8_t i = 0; i < strlen(sendLine); i++){
-		UART_sw_write(sendLine[i]);	//write the entire message to a line
+	for(uint8_t j = 0; sendLine[j] != '\0'; j++){
+		if(k == 0){
+			UART_sw_write_1(sendLine[j]);
+		}
+		else{
+			UART_sw_write(sendLine[j]);	//write the entire message to a line
+		}	
 	}
-	UART_sw_write((char)0x0A);   //To have the cursor go to the next line after encounter first carriage character
-	for(uint8_t i = 0; i < strlen(sendLine); i++){
-		UART_sw_write((char)0x08);	//
+	if(k == 0){
+		UART_sw_write_1((char)0x0A);   //To have the cursor go to the next line after encounter first carriage character
+	}
+	else{
+		UART_sw_write((char)0x0A);   //To have the cursor go to the next line after encounter first carriage character
+	}
+	k++;
+	for(uint8_t j = 0; j < strlen(sendLine); j++){
+		UART_sw_write((char)0x08);	//Move the cursor back by 8 spaces		
 	}
 }
+
+
+void UART_sw_write_1(char c){
+	uint8_t transmitData [8] = {0, 0, 0, 0, 0, 0, 0, 0};
+	uint8_t tempData = (uint8_t) c;   // pass in to the tempData variable
+	uint8_t backSpaceChar = 0x08;
+	
+	PORTB_OUT &= ~PIN0_bm; // Send the start bit for PB0
+	//Set the bit times for sending the data
+	if(BAUD_RATE == 4800){
+		_delay_us(208.3);
+	}
+	else if(BAUD_RATE == 9600){
+		_delay_us(1.2);
+	}
+	else if(BAUD_RATE == 19200){
+		_delay_us(50.1);
+	}
+	
+	//Do some kind of a loop to shift right to PB0 to put into that pin output
+	for(uint8_t i = 0; i < 8; i++){
+		
+		PORTB_OUT = tempData & 0x01;   //Mask to get the LSB to pass to PB0
+		tempData >>= 1;			//shift right by 1
+		transmitData[i] = tempData;
+		
+		//Set the bit times for sending the data
+		if(BAUD_RATE == 4800){
+			_delay_us(208.3);
+		}
+		else if(BAUD_RATE == 9600){
+			_delay_us(1.2);
+		}
+		else if(BAUD_RATE == 19200){
+			_delay_us(50.1);
+		}
+	}
+	
+	
+	
+	PORTB_OUT = PIN0_bm;   //Send the stop bit
+	
+	//Set the bit times wait period
+	if(BAUD_RATE == 4800){
+		_delay_us(208.3);
+	}
+	else if(BAUD_RATE == 9600){
+		_delay_us(1.2);
+	}
+	else if(BAUD_RATE == 19200){
+		_delay_us(50.1);
+	}
+}
+
 
 
 void UART_sw_write(char c){
@@ -99,12 +167,9 @@ void UART_sw_write(char c){
 		_delay_us(50.1);
 	}
 	
-	
 	//Do some kind of a loop to shift right to PB0 to put into that pin output
 	for(uint8_t i = 0; i < 8; i++){
-		
-		
-		
+				
 		PORTB_OUT = tempData & 0x01;   //Mask to get the LSB to pass to PB0
 		tempData >>= 1;			//shift right by 1
 		transmitData[i] = tempData;	
