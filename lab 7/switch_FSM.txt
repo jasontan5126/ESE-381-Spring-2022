@@ -1,0 +1,72 @@
+//The switch statement labeled FSM creates a FSM to parse the command
+//string received in Task 3. You will have to analyze its operation
+//to answer some of the questions for this laboratory.
+
+//You will need to include the following declarations in your code
+//as global variables. Accordingly, place the outside of all functions.
+//uint8_t sdr;	//serial data received
+//uint8_t MAX5402_data;	//data to be written to MAX5402
+//uint8_t pstate = 0; //present state
+//uint8_t d2, d1, d0;	//digits of the decimal value received
+//uint32_t decimal;		//binary value equal to decimal value received
+		
+		FSM: switch (pstate)
+		{
+			case 0:
+			if (sdr == 'V')
+			pstate = 1;
+			else
+			pstate = 0;
+			break;
+			
+			case 1:
+			if ((sdr >= '0') && (sdr <= '9'))
+			{
+				d2 = sdr & 0x0F;
+				pstate = 2;
+			}
+			else
+			pstate = 0;
+			break;
+			
+			case 2:
+			if ((sdr >= '0') && (sdr <= '9'))
+			{
+				d1 = sdr & 0x0F;
+				pstate = 3;
+			}
+			else
+			pstate = '0';
+			break;
+			
+			case 3:
+			if ((sdr >= '0') && (sdr <= '9'))
+			{
+				d0 = sdr & 0x0F;
+				pstate = 4;
+			}
+			else
+			pstate = 0;
+			break;
+			
+			case 4:
+			if (sdr == 0x0d)
+			pstate = 5;
+			else
+			pstate = 0;
+			break;
+			
+			case 5:
+			if (sdr == 0x0a)
+			{
+				pstate = 0;
+				decimal = (((d2 * 10) + d1) * 10) + d0;
+				MAX5402_data = (uint8_t)(((decimal) * 255)/333);
+			}
+			else
+			pstate = 0;
+			break;
+			
+			default:
+			pstate = 0;
+		}
