@@ -20,16 +20,17 @@
 #define WRITE_opcode 0x40
 #define READ_opcode 0x41
 
-
+//Functional Prototypes
 void I2C0_MCP23017_init();
 void MCP23017_I2C_init();
 void MCP23017_I2C_write(uint8_t, uint8_t, uint8_t);
 uint8_t MCP23017_I2C_read(uint8_t, uint8_t);
+
+//Global variable to get the data read from the DIP switches
 uint8_t readData;
 
 int main(void)
 {
-	//uint8_t readData;
 	I2C0_MCP23017_init();   //Initializes  the AVR128DB48 I2C0 to communicate with MCP23017
 	
 	//Initializes the MCP23017. Port A of the GPIO (GPA) must be configured as
@@ -39,31 +40,30 @@ int main(void)
 	{
 			//To read the value of the switches
 			readData = MCP23017_I2C_read(READ_opcode, GPIOAaddr_b1);  
-			asm volatile("nop");
 			
 			//To write to the LEDs output
 			MCP23017_I2C_write(WRITE_opcode, OLATBaddr_b1, readData);
 	}
 }
 
-
+//Initializes the AVR128DB48's I2C0 to commmunicate with the MCP23017.
+//The bit transfer rate between the AVR128DB48 and the MCP23017 must be
+//as fast as possible, but less than or equal to 400 kb/s.
 void I2C0_MCP23017_init(){
 	//Baud rate for the I2C
 	TWI0.MBAUD = 0;
 	
 	TWI0.MCTRLA = 1 << TWI_ENABLE_bp; // Enable TWI Master: enabled
 	
-	//TWI0.DBGCTRL = TWI_DBGRUN_bm;
-	
 	//To force the I2C bus to its idle state
 	TWI0_MSTATUS |= TWI_BUSSTATE_IDLE_gc;      
 	
 }
 
-//Seems like this function is what initializes or configures the MCP23017
-//port pins with indirect access to it
+//This function initializes the MCP23017. Port A of the GPIO (GPA) must be
+//configured as all inputs with pull ups enabled. GPB must be
+//configured as all outputs.
 void MCP23017_I2C_init(){
-	//https://blackboard.stonybrook.edu/bbcswebdav/pid-1709660-dt-content-rid-13115758_1/courses/1224-ESE-381-SEC01-48354/MCP23017_MCP23S17%2016_Bit%20IO%20Expander%20with%20Serial%20Interface%2020001952C.pdf
 	
 	MCP23017_I2C_write(WRITE_opcode, IOCONaddr_b0, 0xA0);
 	
@@ -77,7 +77,8 @@ void MCP23017_I2C_init(){
 	MCP23017_I2C_write(WRITE_opcode, IODIRBaddr_b1, 0x00);
 }
 
-//Reads the address and its data which in this case from DIP switches
+//Reads the address and its data which in this case from DIP switches which are connected to 
+//GPA pins
 uint8_t MCP23017_I2C_read(uint8_t opcode, uint8_t address){
 	TWI0_MADDR = WRITE_opcode;   //Read the opcode to the address
 	
@@ -100,30 +101,31 @@ uint8_t MCP23017_I2C_read(uint8_t opcode, uint8_t address){
 	
 
 	
-	//Acknowledge set meaning slave can send data to the master
-	
-	//Issue the stop condition meaning done with this action of reading switches
+	//Acknowledge set meaning slave can send data to the master and
+	//issue the stop condition meaning done with this action of reading switches
 	TWI0_MCTRLB = TWI_MCMD_STOP_gc | TWI_ACKACT_bm;
 	
 	return TWI0_MDATA;
 }
 
 
-//Write function to write to the MCP23017
+//This function is what write to the actual GPIO expander MCP23017
+//to access the registers and modifying those bit fields
 void MCP23017_I2C_write(uint8_t opcode, uint8_t address, uint8_t data){
 	
-	TWI0_MADDR = opcode;   //Read the opcode to the address
+	TWI0_MADDR = opcode;   //Pass the opcode to the master address
 	
 	//Poll until master transmit address of byte write operation is complete regardless
 	while(!(TWI0.MSTATUS & TWI_WIF_bm));
 	
+	//Pass the address to master data
 	TWI0_MDATA = address;
 	
 	//Poll until master transmit address of byte write operation is complete regardless
 	while(!(TWI0.MSTATUS & TWI_WIF_bm));
 	
 	
-	
+	//Pass the data to master data
 	TWI0_MDATA = data;
 	
 	//Poll until master transmit address of byte write operation is complete regardless
@@ -132,8 +134,4 @@ void MCP23017_I2C_write(uint8_t opcode, uint8_t address, uint8_t data){
 	
 	//Execute acknowledge action followed by issuing a stop condition
 	TWI0_MCTRLB = TWI_MCMD_STOP_gc;
-	
 }
-
-
-//Do reverse of bits
