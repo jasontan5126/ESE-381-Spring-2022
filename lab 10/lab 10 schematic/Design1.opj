@@ -1,0 +1,65 @@
+(ExpressProject "Design1"
+  (ProjectVersion "19981106")
+  (ProjectType "PCB")
+  (Folder "Design Resources"
+    (Folder "Library")
+    (NoModify)
+    (File ".\design1.dsn"
+      (Type "Schematic Design"))
+    (BuildFileAddedOrDeleted "x")
+    (CompileFileAddedOrDeleted "x"))
+  (Folder "Outputs")
+  (Folder "Referenced Projects")
+  (MPSSessionName "jason")
+  (PartMRUSelector
+    ("SCD41 (Breakout)"
+      (FullPartName "SCD41 (Breakout).Normal")
+      (LibraryName "C:\USERS\JASON\DOWNLOADS\AIR_QUALITY_SENSOR.OLB")
+      (DeviceIndex "0"))
+    ("SCD41 (Block Diagram)"
+      (FullPartName "SCD41 (Block Diagram).Normal")
+      (LibraryName "C:\USERS\JASON\DOWNLOADS\AIR_QUALITY_SENSOR.OLB")
+      (DeviceIndex "0"))
+    (VCC_BAR
+      (LibraryName "C:\CADENCE\SPB_17.2\TOOLS\CAPTURE\LIBRARY\CAPSYM.OLB")
+      (DeviceIndex "0"))
+    (R
+      (FullPartName "R.Normal")
+      (LibraryName
+         "C:\CADENCE\SPB_17.2\TOOLS\CAPTURE\LIBRARY\PSPICE\ANALOG.OLB")
+      (DeviceIndex "0"))
+    (GND
+      (LibraryName "C:\CADENCE\SPB_17.2\TOOLS\CAPTURE\LIBRARY\CAPSYM.OLB")
+      (DeviceIndex "0"))
+    (0
+      (LibraryName "C:\CADENCE\SPB_17.2\TOOLS\CAPTURE\LIBRARY\CAPSYM.OLB")
+      (DeviceIndex "0"))
+    (381Lab1Task2
+      (FullPartName "381Lab1Task2.Normal")
+      (LibraryName
+         "C:\USERS\JASON\ONEDRIVE\DESKTOP\ORCAD_LIBRARIES_166(1)\381LAB1TASK2_CURIOSITY.OLB")
+      (DeviceIndex "0")))
+  (GlobalState
+    (FileView
+      (Path "Design Resources")
+      (Path "Design Resources" ".\design1.dsn")
+      (Path "Design Resources" ".\design1.dsn" "SCHEMATIC1")
+      (Select "Design Resources"))
+    (HierarchyView)
+    (Doc
+      (Type "COrCapturePMDoc")
+      (Frame
+        (Placement "44 0 1 -1 -1 -8 -31 0 200 0 170"))
+      (Tab 0))
+    (Doc
+      (Type "COrSchematicDoc")
+      (Frame
+        (Placement "44 2 3 -1 -1 -8 -31 52 1238 52 261")
+        (Scroll "0 309")
+        (Zoom "100")
+        (Occurrence "/"))
+      (Path
+         "C:\USERS\JASON\ONEDRIVE\DESKTOP\ESE 381 SPRING 2022\LAB 10\LAB 10 SCHEMATIC\DESIGN1.DSN")
+      (Schematic "SCHEMATIC1")
+      (Page "PAGE1")))
+  (LastUsedLibraryBrowseDirectory "C:\Users\jason\Downloads"))
